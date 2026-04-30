@@ -1,0 +1,17 @@
+{
+  "name": "scheduler-idea",
+  "version": "0.1.0",
+  "description": "Health-aware daily schedule suggestion app powered by Oura data",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "keywords": ["oura", "health", "scheduler", "wellness", "menstrual-cycle"],
+  "author": "auntiehomie",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "node-fetch": "^3.3.2"
+  }
+}
