@@ -8,11 +8,6 @@ last worked: 2025-01-01
 
 ## Next
 
-- [ ] - Set up Oura API integration
-- [ ] - Build daily schedule suggestion engine based on energy/health data
-- [ ] - Handle menstrual cycle awareness for scheduling
-- [ ] - Add hobby suggestion feature based on current health state
-- [ ] - Design basic UI for schedule view
 
 
 ## In Progress
@@ -29,6 +24,11 @@ last worked: 2025-01-01
 
 ## Done
 
+- [x] - Set up Oura API integration
+- [x] - Build daily schedule suggestion engine based on energy/health data
+- [x] - Handle menstrual cycle awareness for scheduling
+- [x] - Add hobby suggestion feature based on current health state
+- [x] - Design basic UI for schedule view
 
 
 ## Cancelled
