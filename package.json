@@ -5,8 +5,11 @@
   "main": "src/index.js",
   "scripts": {
     "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "dev": "node --watch src/index.js",
+    "ui": "node src/ui.js",
+    "ui:dev": "node --watch src/ui.js"
   },
+  "type": "module",
   "keywords": ["oura", "health", "scheduler", "wellness", "menstrual-cycle"],
   "author": "auntiehomie",
   "license": "MIT",
