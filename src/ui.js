@@ -11,6 +11,8 @@ import { createOuraClient } from './oura.js';
 import { getCycleContext, PHASE_METADATA } from './menstrual.js';
 import { getSuggestedHobbies } from './hobbies.js';
 import { generateSchedule, deriveEnergyLevel } from './scheduler.js';
+import { about } from './about.js';
+import { schedulerPage } from './scheduler-page.js';
 
 const PORT = process.env.PORT || 3000;
 const today = new Date().toISOString().split('T')[0];
@@ -220,6 +222,19 @@ const server = http.createServer(async (req, res) => {
   if (req.url === '/health') {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
     res.end('ok');
+    return;
+  }
+
+  if (req.url === '/about') {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(about());
+    return;
+  }
+
+  if (req.url === '/scheduler') {
+    const blocked = (process.env.BLOCKED_SLOTS || '').split(',').map(s => s.trim()).filter(Boolean);
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(schedulerPage({ blockedSlots: blocked }));
     return;
   }
 
