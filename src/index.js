@@ -10,6 +10,7 @@ import { createOuraClient } from './oura.js';
 import { getCycleContext } from './menstrual.js';
 import { getSuggestedHobbies, } from './hobbies.js';
 import { generateSchedule, printSchedule, deriveEnergyLevel } from './scheduler.js';
+import { createLLMClient } from './llm.js';
 
 const today = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
 
@@ -54,12 +55,28 @@ async function main() {
     count: 5,
   });
 
-  // 5. Generate and print schedule
-  const result = generateSchedule({
-    ouraData,
-    cyclePhase: cycleContext?.phase,
-    hobbies,
-  });
+  // 5. Generate schedule — use LLM if available, else static templates
+  const llm = createLLMClient();
+  let result;
+
+  if (llm.available) {
+    try {
+      console.log(`🤖 Using ${llm.provider} for AI-powered schedule...`);
+      const blockedSlots = (process.env.BLOCKED_SLOTS || '').split(',').map(s => s.trim()).filter(Boolean);
+      result = await llm.generateSchedule({
+        ouraData,
+        cyclePhase: cycleContext?.phase,
+        hobbies,
+        blockedSlots,
+      });
+      console.log('✅ LLM schedule generated.');
+    } catch (err) {
+      console.warn(`⚠️  LLM schedule failed (${err.message}), falling back to static templates.`);
+      result = generateSchedule({ ouraData, cyclePhase: cycleContext?.phase, hobbies });
+    }
+  } else {
+    result = generateSchedule({ ouraData, cyclePhase: cycleContext?.phase, hobbies });
+  }
 
   printSchedule(result);
 
