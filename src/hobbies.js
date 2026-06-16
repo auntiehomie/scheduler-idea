@@ -15,14 +15,12 @@ const SEASONS = {
   SUMMER: 'summer',
   AUTUMN: 'autumn',
   WINTER: 'winter',
-} as const;
-
-type Season = (typeof SEASONS)[keyof typeof SEASONS];
+};
 
 /**
  * Determine the current season based on the month.
  */
-function getCurrentSeason(): Season {
+function getCurrentSeason() {
   const month = new Date().getMonth(); // 0 = January
   if (month >= 2 && month <= 4) return SEASONS.SPRING;
   if (month >= 5 && month <= 7) return SEASONS.SUMMER;
@@ -33,7 +31,7 @@ function getCurrentSeason(): Season {
 /**
  * Activities that are especially nice during specific seasons.
  */
-const SEASONAL_ACTIVITIES: Record<Season, string[]> = {
+const SEASONAL_ACTIVITIES = {
   spring: [
     'planting spring flowers', 'birdwatching', 'spring cleaning refresh',
     'outdoor sketching', 'nature photography (blooming season)',
@@ -66,15 +64,12 @@ const SEASONAL_ACTIVITIES: Record<Season, string[]> = {
 /**
  * Hobby catalog grouped by intensity.
  * Each entry is now tagged as indoor/outdoor.
+ *
+ * @typedef {{ name: string, environment: 'indoor'|'outdoor'|'either' }} HobbyEntry
  */
-export type EnvironmentTag = 'indoor' | 'outdoor' | 'either';
 
-interface HobbyEntry {
-  name: string;
-  environment: EnvironmentTag;
-}
-
-const HOBBIES: Record<string, HobbyEntry[]> = {
+/** @type {Record<string, Array<{name: string, environment: string}>>} */
+const HOBBIES = {
   restorative: [
     { name: 'journaling', environment: 'indoor' },
     { name: 'reading', environment: 'indoor' },
@@ -174,6 +169,7 @@ const HOBBIES: Record<string, HobbyEntry[]> = {
     { name: 'farmers market visit with a friend', environment: 'outdoor' },
     { name: 'crafting circle / stitch-and-bitch', environment: 'indoor' },
   ],
+};
 
 /**
  * Determine which hobby categories to suggest based on energy + phase.
@@ -270,4 +266,4 @@ export function getSuggestedHobbies({ energyLevel, cyclePhase, count = 5, season
   }
 
   return suggestions;
-
+}
