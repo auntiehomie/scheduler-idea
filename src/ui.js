@@ -460,8 +460,14 @@ const server = http.createServer(async (req, res) => {
 
   if (req.url === '/scheduler') {
     const blocked = (process.env.BLOCKED_SLOTS || '').split(',').map(s => s.trim()).filter(Boolean);
-    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-    res.end(schedulerPage({ blockedSlots: blocked }));
+    try {
+      const data = await getScheduleData();
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(schedulerPage({ blockedSlots: blocked, hobbies: data.hobbies, energyLevel: data.energyLevel }));
+    } catch {
+      res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+      res.end(schedulerPage({ blockedSlots: blocked }));
+    }
     return;
   }
 
