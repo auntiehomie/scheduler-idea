@@ -10,11 +10,18 @@
     "ui:dev": "node --watch src/ui.js"
   },
   "type": "module",
-  "keywords": ["oura", "health", "scheduler", "wellness", "menstrual-cycle"],
+  "keywords": [
+    "oura",
+    "health",
+    "scheduler",
+    "wellness",
+    "menstrual-cycle"
+  ],
   "author": "auntiehomie",
   "license": "MIT",
   "dependencies": {
     "dotenv": "^16.4.5",
+    "mixpanel": "^0.22.0",
     "node-fetch": "^3.3.2"
   }
 }

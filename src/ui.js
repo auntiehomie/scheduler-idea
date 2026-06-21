@@ -14,9 +14,13 @@ import { generateSchedule, deriveEnergyLevel } from './scheduler.js';
 import { about } from './about.js';
 import { schedulerPage } from './scheduler-page.js';
 import { generateEnergyCurve, autoSchedulePriorities } from './energy-map.js';
+import { initMixpanel, trackPageView, trackEvent } from './mixpanel.js';
 
 const PORT = process.env.PORT || 3000;
 const today = new Date().toISOString().split('T')[0];
+
+// Initialize analytics on startup
+initMixpanel();
 
 async function getScheduleData() {
   const token = process.env.OURA_ACCESS_TOKEN;
@@ -443,6 +447,7 @@ const server = http.createServer(async (req, res) => {
         'Plan tomorrow\'s tasks',
       ];
       const scheduled = autoSchedulePriorities(priorities, energyCurve.blocks);
+      trackPageView('energy-map', { ouraStatus: data.ouraStatus });
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(renderEnergyMapPage(energyCurve, scheduled, data.ouraStatus));
     } catch (err) {
@@ -453,6 +458,7 @@ const server = http.createServer(async (req, res) => {
   }
 
   if (req.url === '/about') {
+    trackPageView('about');
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(about());
     return;
@@ -462,9 +468,11 @@ const server = http.createServer(async (req, res) => {
     const blocked = (process.env.BLOCKED_SLOTS || '').split(',').map(s => s.trim()).filter(Boolean);
     try {
       const data = await getScheduleData();
+      trackPageView('time-slots', { ouraStatus: data.ouraStatus, hobbyCount: data.hobbies.length });
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(schedulerPage({ blockedSlots: blocked, hobbies: data.hobbies, energyLevel: data.energyLevel }));
     } catch {
+      trackPageView('time-slots', { ouraStatus: 'error' });
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(schedulerPage({ blockedSlots: blocked }));
     }
@@ -479,6 +487,8 @@ const server = http.createServer(async (req, res) => {
 
   try {
     const data = await getScheduleData();
+    trackPageView('schedule', { ouraStatus: data.ouraStatus, energyLevel: data.energyLevel });
+    trackEvent('hobby_suggested', { count: data.hobbies.length, energyLevel: data.energyLevel });
     const html = renderHTML(data);
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
     res.end(html);
